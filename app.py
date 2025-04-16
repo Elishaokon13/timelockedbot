@@ -73,7 +73,7 @@ def schedule():
         secret = data['secret']
         amount = float(data['amount'])
         datetime_str = data['datetime']
-        scheduled_time = datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M')
+        scheduled_time = datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S')
 
         threading.Thread(target=schedule_transaction, args=(destination, secret, amount, scheduled_time)).start()
         return jsonify({"message": "Transaction scheduled successfully!"})
