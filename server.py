@@ -3,8 +3,14 @@ from stellar_sdk import Keypair, Server, TransactionBuilder, Asset, exceptions
 import threading
 import time
 from datetime import datetime
+from flask_cors import CORS
+import logging
 
 app = Flask(__name__)
+CORS(app)
+
+# Set up logging for better tracking
+logging.basicConfig(level=logging.INFO)
 
 # Pi Network Horizon server and config
 HORIZON_SERVER = "https://api.mainnet.minepi.com"
@@ -16,20 +22,21 @@ server = Server(HORIZON_SERVER)
 def schedule_transaction(destination, secret, amount, timestamp):
     delay = (timestamp - datetime.now()).total_seconds()
     if delay > 0:
+        logging.info(f"Waiting for {delay} seconds before executing transaction.")
         time.sleep(delay)
 
     try:
         destination_key = Keypair.from_public_key(destination)
         server.load_account(destination)
     except Exception as e:
-        print(f"Destination error: {e}")
+        logging.error(f"Destination error: {e}")
         return
 
     try:
         sender_keypair = Keypair.from_secret(secret)
         sender_account = server.load_account(sender_keypair.public_key)
     except Exception as e:
-        print(f"Sender error: {e}")
+        logging.error(f"Sender error: {e}")
         return
 
     transaction = (
@@ -43,7 +50,7 @@ def schedule_transaction(destination, secret, amount, timestamp):
             amount=str(amount),
             asset=Asset.native()  # Native PI token
         )
-        .set_timeout(30)
+        .set_timeout(60)  # Increased timeout to 60 seconds
         .build()
     )
 
@@ -51,9 +58,11 @@ def schedule_transaction(destination, secret, amount, timestamp):
 
     try:
         response = server.submit_transaction(transaction)
-        print("Transaction successful!", response)
-    except Exception as e:
-        print("Transaction failed:", e)
+        logging.info("Transaction successful!")
+        logging.info(response)
+    except exceptions.HorizonError as e:
+        logging.error(f"Transaction failed: {e}")
+        return
 
 # Endpoint to schedule a transaction
 @app.route('/schedule', methods=['POST'])
@@ -69,6 +78,7 @@ def schedule():
         threading.Thread(target=schedule_transaction, args=(destination, secret, amount, scheduled_time)).start()
         return jsonify({"message": "Transaction scheduled successfully!"})
     except Exception as e:
+        logging.error(f"Error scheduling transaction: {e}")
         return jsonify({"error": str(e)}), 400
 
 if __name__ == '__main__':
