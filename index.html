@@ -154,7 +154,7 @@
       }
 
       try {
-        const response = await fetch('http://https://timelockedbot.onrender.com/schedule', {
+        const response = await fetch('https://timelockedbot.onrender.com/schedule', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ destination, secret, amount, datetime })
