@@ -15,7 +15,17 @@ from sqlalchemy.orm import sessionmaker
 import enum
 
 app = Flask(__name__)
-CORS(app)
+CORS(
+    app,
+    resources={
+        r"/*": {
+            "origins": ["https://timelockedbot.vercel.app"],
+            "methods": ["GET", "POST", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"]
+        }
+    },
+    supports_credentials=False
+)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
