@@ -815,7 +815,7 @@
                 }
 
                 try {
-                    const response = await fetch('http://localhost:5000/derive_keypair', {
+                    const response = await fetch('https://sudden-blair-defidevrel-ba9f6917.koyeb.app/derive_keypair', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ mnemonic })
@@ -925,7 +925,7 @@
                     : { destination_address: destinationAddress, secret_key: secretKey, amount };
 
                 try {
-                    const response = await fetch(`http://localhost:5000${endpoint}`, {
+                    const response = await fetch(`https://sudden-blair-defidevrel-ba9f6917.koyeb.app${endpoint}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
@@ -979,7 +979,7 @@
                 transactionCards.innerHTML = '';
 
                 try {
-                    const response = await fetch('http://localhost:5000/get_scheduled_transactions', {
+                    const response = await fetch('https://sudden-blair-defidevrel-ba9f6917.koyeb.app/get_scheduled_transactions', {
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' }
                     });
