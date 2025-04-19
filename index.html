@@ -521,7 +521,7 @@
             }
 
             try {
-                const response = await fetch('https://timelockedbot.onrender.com/derive_keypair', {
+                const response = await fetch('http://localhost:5000/derive_keypair', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ mnemonic })
@@ -625,7 +625,7 @@
                 : { destination_address: destinationAddress, secret_key: secretKey, amount };
 
             try {
-                const response = await fetch(`https://timelockedbot.onrender.com${endpoint}`, {
+                const response = await fetch(`http://localhost:5000${endpoint}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
